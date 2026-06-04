@@ -1,0 +1,49 @@
+# tmux.conf.local — gpakosz/.tmux ("Oh My Tmux") のカスタマイズ。
+# managed by chezmoi (dev-env-dotfiles)。編集は source 側 (dot_config/tmux/tmux.conf.local) で。
+#
+# 本体 (~/.config/tmux/tmux.conf) は .chezmoiexternal.toml が commit pin + sha256 で
+# upstream から取得・配置する (read-only 扱い・編集しない)。テーマ / status bar /
+# キーバインド等の既定は本体側が持つ。ここには「以前の tmux 設定相当」だけを
+# 最小限で上書きする。
+#
+# 注意: secret (API キー / token 等) をここに書かない。status bar の #() 等に
+# 秘密値を埋め込まないこと (このファイルは git 管理される)。
+
+# truecolor (24-bit) — 注意: この pin の gpakosz リビジョン (af33f07) では
+# truecolor を適用する _apply_24b 関数と呼び出しが全てコメントアウトされており、
+# tmux_conf_24b_colour 変数は事実上効かない (死に設定)。そのため tmux に
+# 「外側端末 (xterm-ghostty) は RGB 対応」と terminal-features で明示的に伝える。
+# default-terminal は RGB capability を持つ tmux-256color を使う。
+# (xterm-ghostty terminfo がリモートに無い場合、truecolor は外側端末依存になる)
+
+# -- 既存 tmux 設定からの移行 ----------------------------------------------------
+set -g mouse on
+set -g history-limit 100000
+set -g mode-keys vi
+set -g status-keys vi
+set -g default-terminal "tmux-256color"
+set -as terminal-features ",xterm-ghostty:RGB"
+
+# -- pane border 色 (dev-server 識別用) ------------------------------------------
+# このリポ = dev-server 適用なので、ここで枠線色を変えると dev-server 側の tmux
+# だけ色が変わり、ローカル PC の tmux と一目で区別できる。
+#
+# 注意: この gpakosz pin (af33f07) では theme 適用関数 (_apply_theme/_apply_24b)
+# が全てコメントアウトされており tmux_conf_theme_pane_* 変数は効かない。そのため
+# tmux native option を直接指定する (theme 側が上書きしてこないので競合しない)。
+# RGB は terminal-features で有効化済みなので hex 指定可。色を変えたければ下記
+# fg=... を好みの値にするだけ。
+set -g pane-border-style "fg=#585858"           # 非アクティブ枠 (控えめなグレー)
+set -g pane-active-border-style "fg=#ff8700"    # アクティブ枠 (オレンジ = 遠隔の合図)
+
+# -- status bar 着色 (dev-server 識別用) -----------------------------------------
+# status bar 全体をオレンジの帯にし、左端に "DEV-SERVER" バッジを出す。これで
+# 単一ペイン (枠線が出ない状況) でも常に dev-server だと一目で分かる。
+# pane border と同様、この pin では gpakosz の status 装飾が全コメントアウトの
+# ため native option を直接指定する (競合なし)。色は bg=... を変えれば調整可。
+set -g status on
+set -g status-position bottom
+set -g status-style "bg=#ff8700,fg=#000000,bold"          # バー全体 = オレンジの帯
+set -g status-left " DEV-SERVER "                          # 左端バッジ
+set -g status-left-style "bg=#000000,fg=#ff8700,bold"     # バッジは反転 (黒地にオレンジ)
+set -g status-left-length 20

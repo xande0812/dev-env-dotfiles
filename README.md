@@ -24,7 +24,11 @@ chezmoi update
 | [dot_config/sheldon/plugins.toml](dot_config/sheldon/plugins.toml) | `~/.config/sheldon/plugins.toml` | zsh プラグイン（rev pin）|
 | [dot_config/git/config.tmpl](dot_config/git/config.tmpl) | `~/.config/git/config` | git 設定（SSH 署名 / ghq.root）|
 | [dot_config/mise/config.toml](dot_config/mise/config.toml) | `~/.config/mise/config.toml` | mise グローバルツール（版 pin）|
+| [dot_config/tmux/tmux.conf.local](dot_config/tmux/tmux.conf.local) | `~/.config/tmux/tmux.conf.local` | tmux カスタマイズ（gpakosz/.tmux の上書き）|
+| [.chezmoiexternal.toml](.chezmoiexternal.toml) | `~/.config/tmux/tmux.conf` | gpakosz/.tmux 本体を commit pin + sha256 で取得 |
 | `run_onchange_after_10-mise-install.sh.tmpl` | — | mise config 変更時に `mise install` |
 | `run_onchange_after_20-sheldon-lock.sh.tmpl` | — | plugins 変更時に `sheldon lock` |
+
+tmux バイナリ本体は dotfiles ではなく ansible（apt）が導入する。本リポは設定だけを持つ。
 
 `run_onchange_*` は chezmoi が対象設定の変更を検知したときだけ実行する。

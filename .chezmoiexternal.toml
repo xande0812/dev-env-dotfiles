@@ -1,0 +1,22 @@
+# chezmoi external — 外部 (3rd-party) リポから取得して配置するファイル群。
+#
+# ここに置くものは「自分が書いた dotfile」ではなく upstream がメンテする成果物。
+# nix 時代の flake input (commit pin) に相当する。秘密値は置かない。
+#
+# 信頼境界 / pin の規律:
+#   - URL は必ず **commit SHA** で固定する (mutable な tag/branch を指さない)。
+#   - `checksum.sha256` を必ず付ける (取得物が pin と一致するか chezmoi が検証)。
+#     = flake.lock の rev + narHash 相当。改竄・URL すり替えを検出する。
+#   - bump するときは SHA と sha256 を同時に上げ、upstream の diff をレビューする。
+#   - refreshPeriod を長めに取り、apply ごとの再 DL を抑える (SHA 固定なので内容は不変)。
+
+# -- gpakosz/.tmux ("Oh My Tmux") の本体 ----------------------------------------
+# tmux.conf 本体。read-only な upstream 成果物として配置し、編集しない。
+# カスタマイズは同ディレクトリの tmux.conf.local (このリポで管理) で上書きする。
+# 取得先 raw.githubusercontent.com は egress proxy(squid) の allowlist 済。
+[".config/tmux/tmux.conf"]
+    type = "file"
+    url = "https://raw.githubusercontent.com/gpakosz/.tmux/af33f07134b76134acca9d01eacbdecca9c9cda6/.tmux.conf"
+    refreshPeriod = "168h"
+    [".config/tmux/tmux.conf".checksum]
+        sha256 = "52c64ced485a90d715f30dbadb8e6c41f6f94c6418d75c00be5e569b8cbe9037"

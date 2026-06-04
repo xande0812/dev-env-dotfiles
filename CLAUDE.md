@@ -17,6 +17,7 @@ Ubuntu 開発サーバ用の dotfiles を [chezmoi](https://www.chezmoi.io/) で
 - `*.tmpl` → Go テンプレートとして展開してから配置（例 [dot_config/git/config.tmpl](dot_config/git/config.tmpl) は `{{ .chezmoi.homeDir }}` を展開）
 - `run_onchange_after_NN-*.sh.tmpl` → **配置先を持たないスクリプト**。`after` は通常ファイル配置の後、`NN` は実行順、`onchange` はトリガー対象が変わったときだけ再実行。
 - [.chezmoiignore](.chezmoiignore) に書いたパス（現状 `README.md`）はホームに配置されない。
+- [.chezmoiexternal.toml](.chezmoiexternal.toml) → **外部（3rd-party）成果物を取得して配置**する宣言。自分が書く dotfile はここに置かず `dot_*` で管理する。upstream がメンテするファイル（例: gpakosz/.tmux 本体）だけを置く。
 
 ## run_onchange のトリガー機構（重要）
 
@@ -33,6 +34,7 @@ Ubuntu 開発サーバ用の dotfiles を [chezmoi](https://www.chezmoi.io/) で
 
 - ツール: [dot_config/mise/config.toml](dot_config/mise/config.toml) で **version 固定**。`not_found_auto_install = false` / `experimental = false` で暗黙の取得・実験機能を切っている。short name 解決できないものは backend 明示（`github:k1LoW/git-wt`, `aqua:rossmacarthur/sheldon`）。
 - zsh プラグイン: [dot_config/sheldon/plugins.toml](dot_config/sheldon/plugins.toml) で **commit hash (`rev`) 固定**（mutable な tag は使わない）。
+- 外部成果物: [.chezmoiexternal.toml](.chezmoiexternal.toml) で **commit SHA を URL に埋めて固定 + `checksum.sha256` を必須**（flake.lock の rev + narHash 相当）。bump は SHA と sha256 を同時更新し upstream diff をレビュー。現状 gpakosz/.tmux の `.tmux.conf`（rev `af33f07`）。
 - bump 手順: version / rev を上げる → upstream の diff をレビュー → `chezmoi diff` で確認 → apply。
 
 ## ロード順序の制約（壊しやすい）
