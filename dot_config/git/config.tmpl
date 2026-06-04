@@ -1,0 +1,18 @@
+; managed by chezmoi (dev-env-dotfiles)
+[user]
+    name = xande0812
+    email = xande0812@users.noreply.github.com
+    signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILmfLfzfeFQ4/BUCtcKlk79Nw4cVDhwkSI0EIrgOU18A
+[gpg]
+    format = ssh
+[commit]
+    gpgsign = true
+[tag]
+    gpgSign = true
+[init]
+    defaultBranch = main
+[pull]
+    rebase = true
+[ghq]
+    ; git は ~ を展開しないため絶対パスを与える (chezmoi が homeDir に展開)。
+    root = {{ .chezmoi.homeDir }}/ghq

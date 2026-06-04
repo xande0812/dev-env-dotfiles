@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# mise でグローバルツールを install する。mise config が変わったときだけ再実行する
+# ように、下のハッシュ行に config 内容を埋め込む (run_onchange のトリガー)。
+# mise config hash: {{ include "dot_config/mise/config.toml" | sha256sum }}
+set -euo pipefail
+mise install

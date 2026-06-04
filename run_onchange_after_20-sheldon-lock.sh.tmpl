@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# sheldon の plugin を lock (GitHub から clone)。plugins.toml が変わったときだけ
+# 再実行する。sheldon は mise 管理なので mise exec 経由で呼ぶ
+# (この script は 10-mise-install の後に走る)。
+# plugins hash: {{ include "dot_config/sheldon/plugins.toml" | sha256sum }}
+set -euo pipefail
+mise exec -- sheldon lock

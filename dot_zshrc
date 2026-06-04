@@ -1,0 +1,51 @@
+# managed by chezmoi (dev-env-dotfiles). 編集は source 側 (dot_zshrc) で。
+
+# mise: 開発ツール (node/ripgrep/eza/starship/sheldon/git-wt/ghq 等) を PATH に出す。
+# 他の eval より先に置く必要がある。
+eval "$(mise activate zsh)"
+
+# --- history ---
+HISTFILE="$HOME/.zsh_history"
+HISTSIZE=100000
+SAVEHIST=100000
+setopt SHARE_HISTORY HIST_IGNORE_DUPS HIST_IGNORE_ALL_DUPS HIST_EXPIRE_DUPS_FIRST
+
+# --- completion + plugins ---
+# sheldon: zsh-completions(fpath) → compinit → fzf-tab の順で source する。
+eval "$(sheldon source)"
+
+# git-wt: `git wt <branch>` 実行後に新 worktree へ自動 cd する git() wrapper。
+# compinit / fzf-tab の後に評価する必要がある。
+eval "$(git-wt --init zsh)"
+
+# ghq + fzf: `ghq list` を fzf で選んで cd する widget。Ctrl-G にバインド。
+ghq-fzf-widget() {
+  local selected
+  selected=$(ghq list | fzf) || return
+  if [ -n "${selected}" ]; then
+    BUFFER="cd $(ghq root)/${selected}"
+    zle accept-line
+  fi
+  zle reset-prompt
+}
+zle -N ghq-fzf-widget
+bindkey '^g' ghq-fzf-widget
+
+# zsh-autosuggestions: widget を wrap するので fzf-tab の後・syntax-highlighting の前。
+[ -r /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh ] && \
+  source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+
+# --- prompt ---
+eval "$(starship init zsh)"
+
+# --- aliases (eza ベース) ---
+alias ls='eza'
+alias ll='eza -l --git'
+alias la='ls -al'
+alias lt='eza --tree'
+alias lla='eza -la --git'
+alias lg='lazygit'
+
+# zsh-syntax-highlighting は必ず最後に source する。
+[ -r /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ] && \
+  source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh

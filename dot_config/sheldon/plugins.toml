@@ -1,0 +1,26 @@
+# sheldon plugins (zsh)
+#
+# 各 plugin は commit hash (rev) で pin する (tag = mutable は避ける)。
+# bump 時は upstream の diff をレビューしてから rev を上げる。
+#
+# ロード順序 (重要):
+#   1. zsh-completions: 補完定義を fpath に足すだけ (apply=["fpath"])。
+#   2. compinit (inline): zsh-completions を足した後に呼び直して反映。
+#   3. fzf-tab: 「compinit 後・widget を wrap する autosuggestions より前」が要件。
+# plugins は記載順に出力されるので、この順に並べる。
+# alias を作るプラグインは入れない (.zshrc の alias と衝突するため)。
+
+shell = "zsh"
+
+[plugins.zsh-completions]
+github = "zsh-users/zsh-completions"
+rev = "28c5bdcaf81bb89e56d0df8267d822c3b8aed9e0"
+dir = "src"
+apply = ["fpath"]
+
+[plugins.compinit]
+inline = "autoload -U compinit && compinit"
+
+[plugins.fzf-tab]
+github = "Aloxaf/fzf-tab"
+rev = "d7e0234614dbe5369fdd760907d12c0e05a4dccc"
