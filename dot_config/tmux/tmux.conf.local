@@ -2,53 +2,76 @@
 # managed by chezmoi (dev-env-dotfiles)。編集は source 側 (dot_config/tmux/tmux.conf.local) で。
 #
 # 本体 (~/.config/tmux/tmux.conf) は .chezmoiexternal.toml が commit pin + sha256 で
-# upstream から取得・配置する (read-only 扱い・編集しない)。テーマ / status bar /
-# キーバインド等の既定は本体側が持つ。ここには「以前の tmux 設定相当」だけを
-# 最小限で上書きする。
+# upstream から取得・配置する (read-only 扱い・編集しない)。
 #
-# 注意: secret (API キー / token 等) をここに書かない。status bar の #() 等に
-# 秘密値を埋め込まないこと (このファイルは git 管理される)。
+# ■ gpakosz のテーマ機構 (重要 / 以前ここのコメントは誤解していた) ----------------
+#   gpakosz は本体末尾で次の順に実行する:
+#       run '... source "$TMUX_CONF_LOCAL"'                        # このファイルを読む
+#       run 'cut -c3- "$TMUX_CONF" | sh -s _apply_configuration'   # _apply_theme& を走らせる
+#   _apply_theme は config パース完了後に **非同期で** status-style / status-left /
+#   pane-border 等を上書き設定する。さらに _apply_configuration は末尾で
+#   `printenv | grep '^tmux_conf_'` を回しており、tmux_conf_* は環境変数として
+#   読まれる ＝ このファイルの `tmux_conf_theme_*=...` 代入が allexport で取り込まれ、
+#   `${tmux_conf_theme_colour_N:-既定}` で参照される。
+#
+#   従って:
+#     - テーマ (status bar / window / pane border / 色) は必ず `tmux_conf_theme_*`
+#       変数で指定する。native な `set -g status-style ...` をここに書いても
+#       後から走る _apply_theme に握り潰される (＝以前のオレンジ識別は一度も効いて
+#       いなかった。"theme 関数はコメントアウトされ死んでいる" という旧コメントは誤り。
+#       関数は `cut -c3-` で `# ` を剥がして実行されており生きている)。
+#     - theme に関与しない素の option (mouse / history-limit / mode-keys 等) は
+#       native `set -g ...` でよい (_apply_theme は触らないので生き残る)。
+#
+# 注意: secret (API キー / token 等) をここに書かない (このファイルは git 管理・公開リポ)。
 
-# truecolor (24-bit) — 注意: この pin の gpakosz リビジョン (af33f07) では
-# truecolor を適用する _apply_24b 関数と呼び出しが全てコメントアウトされており、
-# tmux_conf_24b_colour 変数は事実上効かない (死に設定)。そのため tmux に
-# 「外側端末 (xterm-ghostty) は RGB 対応」と terminal-features で明示的に伝える。
-# default-terminal は RGB capability を持つ tmux-256color を使う。
-# (xterm-ghostty terminfo 自体は run_onchange_after_05-ghostty-terminfo が
-#  ~/.terminfo にコンパイル済み。これが無いと tmux は起動拒否する。)
-
-# -- 既存 tmux 設定からの移行 ----------------------------------------------------
+# -- theme に関与しない素の設定 (native set でよい) -------------------------------
 set -g mouse on
 set -g history-limit 100000
 set -g mode-keys vi
 set -g status-keys vi
+set -g status-position bottom
 set -g default-terminal "tmux-256color"
+# truecolor — Ghostty から SSH した tmux に「外側端末 (xterm-ghostty) は RGB 対応」と
+# terminal-features で明示する。default-terminal は RGB capability を持つ tmux-256color。
+# xterm-ghostty terminfo は run_onchange_after_05-ghostty-terminfo が ~/.terminfo に
+# コンパイル済 (無いと tmux が起動拒否する)。
 # sync: 同期出力 (DECSET 2026)。外側 Ghostty は対応 (ghostty.terminfo に Sync= あり)
 # だが stock の tmux-256color terminfo は Sync cap を持たないため、tmux に「外側は
 # sync 対応」と明示しないと Claude 等 TUI の同期シーケンスが Ghostty まで届かない。
 # 無いとペイン分割時の SIGWINCH 全画面再描画が非アトミックになり画面が乱れる。
 set -as terminal-features ",xterm-ghostty:RGB:sync"
+# gpakosz の 24-bit 適用を有効化し、下記 hex 色を RGB で出す (tmux_conf_* なので gpakosz が読む)。
+tmux_conf_24b_colour=true
 
-# -- pane border 色 (dev-server 識別用) ------------------------------------------
-# このリポ = dev-server 適用なので、ここで枠線色を変えると dev-server 側の tmux
-# だけ色が変わり、ローカル PC の tmux と一目で区別できる。
-#
-# 注意: この gpakosz pin (af33f07) では theme 適用関数 (_apply_theme/_apply_24b)
-# が全てコメントアウトされており tmux_conf_theme_pane_* 変数は効かない。そのため
-# tmux native option を直接指定する (theme 側が上書きしてこないので競合しない)。
-# RGB は terminal-features で有効化済みなので hex 指定可。色を変えたければ下記
-# fg=... を好みの値にするだけ。
-set -g pane-border-style "fg=#585858"           # 非アクティブ枠 (控えめなグレー)
-set -g pane-active-border-style "fg=#ff8700"    # アクティブ枠 (オレンジ = 遠隔の合図)
+# -- Catppuccin Macchiato パレット ------------------------------------------------
+# gpakosz の colour_1..17 のうち、実際に複数箇所で使われる 1..5 を Catppuccin
+# Macchiato 公式値に差し替える。6..17 は status-left/right の fg/bg を後段で明示
+# 指定するため触らない (それ以外の参照箇所が無い)。
+#   role はおおむね: 1=背景 / 2=控えめ面 / 3=文字 / 4=アクセント(現在 window・clock) / 5=強調
+tmux_conf_theme_colour_1="#24273a"    # base     — status bar 背景 / 非アクティブ window 背景
+tmux_conf_theme_colour_2="#363a4f"    # surface0 — focused pane 背景など控えめ面
+tmux_conf_theme_colour_3="#a5adcb"    # subtext0 — status / 非アクティブ window 文字
+tmux_conf_theme_colour_4="#c6a0f6"    # mauve    — 現在 window ハイライト / clock / アクセント
+tmux_conf_theme_colour_5="#eed49f"    # yellow   — message / copy-mode / bell
 
-# -- status bar 着色 (dev-server 識別用) -----------------------------------------
-# status bar 全体をオレンジの帯にし、左端に "DEV-SERVER" バッジを出す。これで
-# 単一ペイン (枠線が出ない状況) でも常に dev-server だと一目で分かる。
-# pane border と同様、この pin では gpakosz の status 装飾が全コメントアウトの
-# ため native option を直接指定する (競合なし)。色は bg=... を変えれば調整可。
-set -g status on
-set -g status-position bottom
-set -g status-style "bg=#ff8700,fg=#000000,bold"          # バー全体 = オレンジの帯
-set -g status-left " DEV-SERVER "                          # 左端バッジ
-set -g status-left-style "bg=#000000,fg=#ff8700,bold"     # バッジは反転 (黒地にオレンジ)
-set -g status-left-length 20
+# -- pane border (dev-server 識別: アクティブ枠を peach にして「遠隔」を示す) -------
+# 単一ペインだと枠線は出ないので、識別の本命は下の status-left バッジ。枠線は補助。
+tmux_conf_theme_pane_border="#363a4f"          # surface0 (非アクティブ・控えめ)
+tmux_conf_theme_pane_active_border="#ed8796"   # red (= DEV-SERVER バッジと同色の強い遠隔シグナル)
+
+# -- status-left: DEV-SERVER バッジ (Catppuccin の中で識別を維持) -----------------
+# 3 セグメント (| 区切り):
+#   seg1 = red 地に DEV-SERVER バッジ — 単一ペインでも常に「遠隔の dev-server」と一目で分かる
+#   seg2 = セッション名 (❐ #S)
+#   seg3 = uptime (uptime_* トークンは gpakosz 本体が算出して埋める)
+tmux_conf_theme_status_left=' DEV-SERVER | ❐ #S | ↑#{?uptime_y, #{uptime_y}y,}#{?uptime_d, #{uptime_d}d,}#{?uptime_h, #{uptime_h}h,}#{?uptime_m, #{uptime_m}m,} '
+tmux_conf_theme_status_left_fg="#181926,#cad3f5,#a5adcb"   # crust / text / subtext0
+tmux_conf_theme_status_left_bg="#ed8796,#494d64,#363a4f"   # red / surface1 / surface0
+tmux_conf_theme_status_left_attr="bold,bold,none"
+
+# -- status-right: gpakosz 既定の内容を Catppuccin 配色で。ホスト名を mauve で強調 --
+tmux_conf_theme_status_right=' #{prefix}#{mouse}#{pairing}#{synchronized}#{?battery_status, #{battery_status},}#{?battery_bar, #{battery_bar},}#{?battery_percentage, #{battery_percentage},} , %R , %d %b | #{username}#{root} | #{hostname} '
+tmux_conf_theme_status_right_fg="#a5adcb,#cad3f5,#181926"  # subtext0 / text / crust
+tmux_conf_theme_status_right_bg="#363a4f,#494d64,#c6a0f6"  # surface0 / surface1 / mauve(host)
+tmux_conf_theme_status_right_attr="none,none,bold"
