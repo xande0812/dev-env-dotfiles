@@ -14,7 +14,8 @@
 # tmux_conf_24b_colour 変数は事実上効かない (死に設定)。そのため tmux に
 # 「外側端末 (xterm-ghostty) は RGB 対応」と terminal-features で明示的に伝える。
 # default-terminal は RGB capability を持つ tmux-256color を使う。
-# (xterm-ghostty terminfo がリモートに無い場合、truecolor は外側端末依存になる)
+# (xterm-ghostty terminfo 自体は run_onchange_after_05-ghostty-terminfo が
+#  ~/.terminfo にコンパイル済み。これが無いと tmux は起動拒否する。)
 
 # -- 既存 tmux 設定からの移行 ----------------------------------------------------
 set -g mouse on

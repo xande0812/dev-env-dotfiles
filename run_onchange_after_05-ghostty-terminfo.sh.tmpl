@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# Ghostty (local 端末) は TERM=xterm-ghostty を SSH 経由で dev-server に渡すが、server の
+# terminfo DB に xterm-ghostty が無いと tmux が "missing or unsuitable terminal" で起動拒否
+# し、tmux 外の表示も崩れる。local Ghostty が持つ正規エントリ
+# (ghostty.terminfo = `infocmp -x xterm-ghostty` の出力) を tic で
+# ~/.terminfo にコンパイルして解決する。source が変わったときだけ再実行する
+# ように、下のハッシュ行に source 内容を埋め込む (run_onchange のトリガー)。
+# source は .chezmoiignore でホーム非配置。terminfo 本文 acsc が二重波括弧を含み
+# .chezmoitemplates だと Go template が誤 parse するため、raw 読みの include を使う。
+# ghostty terminfo hash: {{ include "ghostty.terminfo" | sha256sum }}
+set -euo pipefail
+# -x: 拡張 capability を保持 / -o: 出力先 (root 不要の user-local DB)。ncurses は
+# $HOME/.terminfo を既定で探索するので、以降 TERM=xterm-ghostty が解決できる。
+tic -x -o "$HOME/.terminfo" - <<'GHOSTTY_TERMINFO'
+{{ include "ghostty.terminfo" }}
+GHOSTTY_TERMINFO

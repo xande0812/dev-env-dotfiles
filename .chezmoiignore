@@ -1,2 +1,7 @@
 # リポの説明文。ホームには配置しない。
 README.md
+
+# run_onchange_after_05 が tic に流す terminfo source。ホームには配置せず
+# include で raw 読みするだけ (本文の acsc が二重波括弧を含み .chezmoitemplates では
+# Go template が誤 parse するため、通常ファイル + この ignore で扱う)。
+ghostty.terminfo
