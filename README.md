@@ -1,6 +1,6 @@
 # dev-env-dotfiles
 
-Ubuntu 開発サーバ用の dotfiles を [chezmoi](https://www.chezmoi.io/) で管理する **公開** リポジトリ。シェル（zsh + starship + sheldon）/ git / mise（開発ツールの版管理）などを宣言的に配置する。
+Ubuntu 開発サーバ用の dotfiles を [chezmoi](https://www.chezmoi.io/) で管理する **公開** リポジトリ。シェル（zsh + starship + sheldon）/ git / mise（開発ツールの版管理）などを宣言的に配置する。
 
 このリポは公開。**秘密値（API キー・鍵・トークン）は一切置かない**。
 

@@ -1,0 +1,16 @@
+# lazygit config — managed by chezmoi (dev-env-dotfiles)。編集は source 側で。
+#
+# ■ clipboard を OSC52 にする理由 -------------------------------------------------
+# lazygit は内部の clipboard ライブラリ (atotto/clipboard) が xsel/xclip/wl-clipboard を
+# 呼ぶ。headless な dev-server には無く、入れても書き込み先はサーバ側であって手元の
+# Ghostty には届かない。そこで copyToClipboardCmd を OSC52 エスケープに差し替え、
+# lazygit → tmux (set-clipboard on で転送) → Ghostty と端末経由で手元クリップボードに
+# 載せる (SSH 越しの正攻法)。
+#
+#   - {{text}} は lazygit が shell-quote して埋める。
+#   - base64 の改行を除去し、OSC52 (ESC ] 52 ; c ; <b64> BEL) を /dev/tty へ直接書く
+#     (lazygit が stdout を握っても確実に pane の pty = tmux に届かせるため)。
+#   - tmux の set-clipboard on が OSC52 を横取りして外側 Ghostty へ転送するので、
+#     DCS passthrough のラップは不要。
+os:
+  copyToClipboardCmd: 'printf "\033]52;c;$(printf %s {{text}} | base64 | tr -d \\n)\a" > /dev/tty'

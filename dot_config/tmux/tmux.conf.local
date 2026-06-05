@@ -32,6 +32,12 @@ set -g mode-keys vi
 set -g status-keys vi
 set -g status-position bottom
 set -g default-terminal "tmux-256color"
+# clipboard — OSC52 を有効化。内側アプリ (lazygit / nvim 等) が吐く OSC52 を tmux が
+# 横取りして外側 Ghostty へ転送し、手元のクリップボードに載せる (SSH 越しのコピー)。
+# gpakosz 本体は set-clipboard を既定 (external) のまま残すため、ここで明示的に on に
+# する (on は転送に加え tmux 内部バッファにも保存)。clipboard は theme 非関与なので
+# native set でよい (_apply_theme に握り潰されない)。
+set -g set-clipboard on
 # truecolor — Ghostty から SSH した tmux に「外側端末 (xterm-ghostty) は RGB 対応」と
 # terminal-features で明示する。default-terminal は RGB capability を持つ tmux-256color。
 # xterm-ghostty terminfo は run_onchange_after_05-ghostty-terminfo が ~/.terminfo に
