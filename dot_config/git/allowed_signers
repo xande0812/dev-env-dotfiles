@@ -1,0 +1,4 @@
+# managed by chezmoi (dev-env-dotfiles)
+# SSH 署名の検証 (git verify-commit / log --show-signature) 用の principal→公開鍵 対応表。
+# 公開鍵のみ (秘密値ではない) なので公開リポで管理してよい。config.tmpl の signingkey と一致させること。
+xande0812@users.noreply.github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILmfLfzfeFQ4/BUCtcKlk79Nw4cVDhwkSI0EIrgOU18A

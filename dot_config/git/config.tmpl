@@ -5,6 +5,10 @@
     signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILmfLfzfeFQ4/BUCtcKlk79Nw4cVDhwkSI0EIrgOU18A
 [gpg]
     format = ssh
+[gpg "ssh"]
+    ; 署名の検証 (verify-commit / log --show-signature) に必要な許可署名者ファイル。
+    ; 欠けていると署名は付くが検証だけ error になる。git は ~ を展開しないため絶対パスを与える。
+    allowedSignersFile = {{ .chezmoi.homeDir }}/.config/git/allowed_signers
 [commit]
     gpgsign = true
 [tag]
