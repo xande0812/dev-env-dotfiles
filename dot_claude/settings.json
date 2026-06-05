@@ -1,6 +1,18 @@
 {
+  "env": {
+    "DISABLE_AUTOUPDATER": "1"
+  },
   "permissions": {
-    "defaultMode": "plan",
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:docs.anthropic.com)",
+      "WebFetch(domain:docs.aws.amazon.com)",
+      "WebFetch(domain:developer.mozilla.org)",
+      "WebFetch(domain:nodejs.org)",
+      "WebFetch(domain:react.dev)",
+      "WebFetch(domain:pnpm.io)",
+      "WebFetch(domain:docs.github.com)"
+    ],
     "deny": [
       "Read(~/.aws/**)",
       "Read(~/.ssh/**)",
@@ -26,21 +38,9 @@
       "Bash(git clone *)",
       "WebFetch"
     ],
-    "allow": [
-      "WebSearch",
-      "WebFetch(domain:docs.anthropic.com)",
-      "WebFetch(domain:docs.aws.amazon.com)",
-      "WebFetch(domain:developer.mozilla.org)",
-      "WebFetch(domain:nodejs.org)",
-      "WebFetch(domain:react.dev)",
-      "WebFetch(domain:pnpm.io)",
-      "WebFetch(domain:docs.github.com)"
-    ]
+    "defaultMode": "plan"
   },
-  "env": {
-    "DISABLE_AUTOUPDATER": "1"
-  },
-  "effortLevel": "xhigh",
   "language": "japanese",
-  "tui": "fullscreen"
+  "effortLevel": "xhigh",
+  "tui": "default"
 }
