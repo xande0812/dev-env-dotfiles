@@ -36,6 +36,7 @@ Ubuntu 開発サーバ用の dotfiles を [chezmoi](https://www.chezmoi.io/) で
 - zsh プラグイン: [dot_config/sheldon/plugins.toml](dot_config/sheldon/plugins.toml) で **commit hash (`rev`) 固定**（mutable な tag は使わない）。
 - 外部成果物: [.chezmoiexternal.toml](.chezmoiexternal.toml) で **commit SHA を URL に埋めて固定 + `checksum.sha256` を必須**（flake.lock の rev + narHash 相当）。bump は SHA と sha256 を同時更新し upstream diff をレビュー。現状 gpakosz/.tmux の `.tmux.conf`（rev `af33f07`）。
 - AI agent CLI: [dot_config/mise/config.toml](dot_config/mise/config.toml) で claude（`aqua:anthropics/claude-code`）/ codex（`aqua:openai/codex`）を **version 固定 + aqua backend 明示**（公式 release の checksum 検証経路を担保）。bump は version を上げ upstream release を確認してから apply。
+- Neovim plugin: [dot_config/nvim/lazy-lock.json](dot_config/nvim/lazy-lock.json) で **commit hash 固定**。lazy.nvim は実行時に GitHub からプラグインを取得し、nvim 起動時に sandbox 外のログインシェル文脈で評価する（sheldon / tmux-gpakosz / direnv .envrc と同種の信頼境界）。bump は `:Lazy update` を手動実行 → `chezmoi re-add ~/.config/nvim/lazy-lock.json` で source へ取り込み → diff レビュー → commit（自動追従させない）。`lua/plugins/*.lua` に `curl | sh` 相当や秘密値を書かない。
 
 ## AI agent の設定（bwrap sandbox 連携）
 

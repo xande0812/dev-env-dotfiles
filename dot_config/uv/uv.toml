@@ -1,0 +1,9 @@
+# managed by chezmoi (dev-env-dotfiles)
+# uv (Astral) のグローバル設定。
+#
+# only-binary = [":all:"] は sdist install を一切拒否し、Python supply-chain 攻撃が
+# 典型的に悪用する setup.py / build-script の実行面を塞ぐ。wheel が無く sdist だけの
+# pure-Python パッケージは install に失敗するが、それは意図どおり。正しい対処は
+# wheel を publish する / vendor することで、この default を緩めることではない。
+[pip]
+only-binary = [":all:"]

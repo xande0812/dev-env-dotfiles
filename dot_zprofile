@@ -1,0 +1,16 @@
+# managed by chezmoi (dev-env-dotfiles)。編集は source 側 (dot_zprofile) で。
+#
+# zsh login shell で 1 度だけ走る (ssh / SSM ログイン時)。tmux の各ペイン等の
+# 非 login interactive shell では走らないので、banner はログイン時のみ表示される。
+
+# 非 interactive な login (scp/rsync 等) では banner を出さない。
+[[ -o interactive ]] || return
+
+# dev-server ログイン banner。figlet / lolcat は apt 導入 (システム PATH)。
+figlet -f slant 'dev-server' | lolcat
+printf '\n'
+printf '  \033[1;36muser:\033[0m   %s\n'   "$(whoami)"
+printf '  \033[1;36mhost:\033[0m   %s\n'   "$(hostname)"
+printf '  \033[1;36mkernel:\033[0m %s\n'   "$(uname -r)"
+printf '  \033[1;36muptime:\033[0m %s\n'   "$(uptime -p 2>/dev/null || uptime)"
+printf '\n'

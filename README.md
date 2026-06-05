@@ -29,6 +29,10 @@ chezmoi update
 | [dot_claude/settings.json](dot_claude/settings.json) | `~/.claude/settings.json` | Claude Code 権限（Read/Bash/WebFetch deny・allow）|
 | [dot_claude/CLAUDE.md](dot_claude/CLAUDE.md) | `~/.claude/CLAUDE.md` | Claude Code user-global rule |
 | [dot_codex/AGENTS.md](dot_codex/AGENTS.md) | `~/.codex/AGENTS.md` | codex user-global rule（config.toml は置かない）|
+| [dot_config/nvim/](dot_config/nvim) | `~/.config/nvim/` | Neovim（LazyVim distro、`lazy-lock.json` で plugin pin）|
+| [dot_config/direnv/direnv.toml](dot_config/direnv/direnv.toml) | `~/.config/direnv/direnv.toml` | direnv 設定（whitelist 不採用＝明示 allow 方針）|
+| [dot_config/uv/uv.toml](dot_config/uv/uv.toml) | `~/.config/uv/uv.toml` | uv 設定（`only-binary=[":all:"]`＝sdist 拒否）|
+| [dot_zprofile](dot_zprofile) | `~/.zprofile` | login shell 用（dev-server banner）|
 | `run_onchange_after_10-mise-install.sh.tmpl` | — | mise config 変更時に `mise install` |
 | `run_onchange_after_20-sheldon-lock.sh.tmpl` | — | plugins 変更時に `sheldon lock` |
 

@@ -1,0 +1,9 @@
+# managed by chezmoi (dev-env-dotfiles)
+# direnv のグローバル設定。
+#
+# whitelist (特定 prefix 配下の自動許可) は **わざと入れない**。任意 .envrc を
+# `direnv allow` 無しで実行する穴になるため、各プロジェクトで明示 allow させる
+# opt-in 方針を維持する (sheldon / tmux-gpakosz / mise trust と同種の信頼境界)。
+# ここは env 差分の冗長表示を抑える無害な最小設定に留める。
+[global]
+hide_env_diff = true

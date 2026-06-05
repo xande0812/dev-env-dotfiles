@@ -38,6 +38,11 @@ bindkey '^g' ghq-fzf-widget
 # --- prompt ---
 eval "$(starship init zsh)"
 
+# direnv: cd した瞬間に .envrc を読み、プロジェクトごとの env へ切り替える。
+# direnv は mise 管理 (mise activate で PATH に出る)。未許可の .envrc は実行されない
+# (whitelist は direnv.toml に入れていない = 各プロジェクトで明示 allow する opt-in)。
+eval "$(direnv hook zsh)"
+
 # --- aliases (eza ベース) ---
 alias ls='eza'
 alias ll='eza -l --git'
