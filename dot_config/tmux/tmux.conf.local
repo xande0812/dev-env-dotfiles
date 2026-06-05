@@ -23,7 +23,11 @@ set -g history-limit 100000
 set -g mode-keys vi
 set -g status-keys vi
 set -g default-terminal "tmux-256color"
-set -as terminal-features ",xterm-ghostty:RGB"
+# sync: 同期出力 (DECSET 2026)。外側 Ghostty は対応 (ghostty.terminfo に Sync= あり)
+# だが stock の tmux-256color terminfo は Sync cap を持たないため、tmux に「外側は
+# sync 対応」と明示しないと Claude 等 TUI の同期シーケンスが Ghostty まで届かない。
+# 無いとペイン分割時の SIGWINCH 全画面再描画が非アトミックになり画面が乱れる。
+set -as terminal-features ",xterm-ghostty:RGB:sync"
 
 # -- pane border 色 (dev-server 識別用) ------------------------------------------
 # このリポ = dev-server 適用なので、ここで枠線色を変えると dev-server 側の tmux
