@@ -26,6 +26,9 @@ chezmoi update
 | [dot_config/mise/config.toml](dot_config/mise/config.toml) | `~/.config/mise/config.toml` | mise グローバルツール（版 pin）|
 | [dot_config/tmux/tmux.conf.local](dot_config/tmux/tmux.conf.local) | `~/.config/tmux/tmux.conf.local` | tmux カスタマイズ（gpakosz/.tmux の上書き）|
 | [.chezmoiexternal.toml](.chezmoiexternal.toml) | `~/.config/tmux/tmux.conf` | gpakosz/.tmux 本体を commit pin + sha256 で取得 |
+| [dot_claude/settings.json](dot_claude/settings.json) | `~/.claude/settings.json` | Claude Code 権限（Read/Bash/WebFetch deny・allow）|
+| [dot_claude/CLAUDE.md](dot_claude/CLAUDE.md) | `~/.claude/CLAUDE.md` | Claude Code user-global rule |
+| [dot_codex/AGENTS.md](dot_codex/AGENTS.md) | `~/.codex/AGENTS.md` | codex user-global rule（config.toml は置かない）|
 | `run_onchange_after_10-mise-install.sh.tmpl` | — | mise config 変更時に `mise install` |
 | `run_onchange_after_20-sheldon-lock.sh.tmpl` | — | plugins 変更時に `sheldon lock` |
 

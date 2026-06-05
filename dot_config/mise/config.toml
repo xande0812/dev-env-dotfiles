@@ -18,6 +18,15 @@ ghq = "1.10.1"
 dotenvx = "1.71.0"
 "github:k1LoW/git-wt" = "0.29.0"
 "aqua:rossmacarthur/sheldon" = "0.8.5"
+# pnpm: bwrap の pnpm-sandboxed (install 系 sandbox) が使う。
+pnpm = "11.5.1"
+# AI agent CLI。bwrap wrapper (claude-sandboxed / codex-sandboxed 等) が
+# `mise which` で実体パスを解決して sandbox 内で起動する。backend を aqua に
+# 明示固定して公式 GitHub release の checksum 検証経路を担保する (短縮名 claude /
+# codex は http:claude / npm fallback も持つため)。bump 時は version を上げ、
+# upstream release を確認してから apply (flake.lock の rev+sha256 運用を踏襲)。
+"aqua:anthropics/claude-code" = "2.1.162"
+"aqua:openai/codex" = "0.135.0"
 
 [settings]
 # cd しただけで不足 tool を自動取得・ビルドしない（install は明示）。

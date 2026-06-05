@@ -35,6 +35,16 @@ Ubuntu 開発サーバ用の dotfiles を [chezmoi](https://www.chezmoi.io/) で
 - ツール: [dot_config/mise/config.toml](dot_config/mise/config.toml) で **version 固定**。`not_found_auto_install = false` / `experimental = false` で暗黙の取得・実験機能を切っている。short name 解決できないものは backend 明示（`github:k1LoW/git-wt`, `aqua:rossmacarthur/sheldon`）。
 - zsh プラグイン: [dot_config/sheldon/plugins.toml](dot_config/sheldon/plugins.toml) で **commit hash (`rev`) 固定**（mutable な tag は使わない）。
 - 外部成果物: [.chezmoiexternal.toml](.chezmoiexternal.toml) で **commit SHA を URL に埋めて固定 + `checksum.sha256` を必須**（flake.lock の rev + narHash 相当）。bump は SHA と sha256 を同時更新し upstream diff をレビュー。現状 gpakosz/.tmux の `.tmux.conf`（rev `af33f07`）。
+- AI agent CLI: [dot_config/mise/config.toml](dot_config/mise/config.toml) で claude（`aqua:anthropics/claude-code`）/ codex（`aqua:openai/codex`）を **version 固定 + aqua backend 明示**（公式 release の checksum 検証経路を担保）。bump は version を上げ upstream release を確認してから apply。
+
+## AI agent の設定（bwrap sandbox 連携）
+
+claude / codex は別 ansible playbook（`dev-env-playbook` の `bwrap_wrappers`）が配置する bwrap wrapper（`claude-sandboxed` / `codex-sandboxed` 等）経由で起動する。このリポはその **設定ファイルと version pin** だけを持つ。
+
+- [dot_claude/settings.json](dot_claude/settings.json): 権限（secret path / curl 等 / git network の deny、WebFetch は domain allowlist のみ）。**`WebFetch(domain:...)` を増減するときは egress proxy（squid）の allowlist も同じ変更で更新する**（`dev-env-playbook` の `roles/squid/files/allowlist.txt`）。片方だけ変えても効かない。
+- [dot_claude/CLAUDE.md](dot_claude/CLAUDE.md) / [dot_codex/AGENTS.md](dot_codex/AGENTS.md): user-global rule（外部情報を信頼しない・secret に触れない・git network は手動）。
+- codex の `config.toml` は**置かない**（codex 自身が所有する writable な config に project trust を runtime 永続化させるため。hardening は wrapper の `-c` フラグで強制）。
+- CLI バイナリは mise が `$HOME` 配下に install する。wrapper は `mise which` で実体パスを解決し、sandbox の `--tmpfs /home` 下でも `~/.local/share/mise` の ro-bind 経由で到達させる。
 - bump 手順: version / rev を上げる → upstream の diff をレビュー → `chezmoi diff` で確認 → apply。
 
 ## ロード順序の制約（壊しやすい）

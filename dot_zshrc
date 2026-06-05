@@ -46,6 +46,13 @@ alias lt='eza --tree'
 alias lla='eza -la --git'
 alias lg='lazygit'
 
+# AI agent CLI は既定で bwrap sandbox 版を呼ぶ (低権限 = ANTHROPIC_API_KEY / OAuth のみ)。
+# commit signing / AWS read-only / dotenv 復号が要るときは claude-with-* / codex-with-*
+# を明示的に呼ぶ。生バイナリは `command claude` / `mise which claude` で。
+# wrapper 本体は ansible が /usr/local/bin に配置する (dev-env-playbook/roles/bwrap_wrappers)。
+alias claude='claude-sandboxed'
+alias codex='codex-sandboxed'
+
 # zsh-syntax-highlighting は必ず最後に source する。
 [ -r /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ] && \
   source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
