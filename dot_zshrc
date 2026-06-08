@@ -57,6 +57,14 @@ alias lg='lazygit'
 # wrapper 本体は ansible が /usr/local/bin に配置する (dev-env-playbook/roles/bwrap_wrappers)。
 alias claude='claude-sandboxed'
 alias codex='codex-sandboxed'
+alias cl='claude-sandboxed'
+alias cl-g='claude-with-git'
+alias cl-aws='claude-with-aws-ro'
+alias cl-env='claude-with-dotenv'
+alias cx='codex-sandboxed'
+alias cx-g='codex-with-git'
+alias cx-aws='codex-with-aws-ro'
+alias cx-env='codex-with-dotenv'
 
 # --- functions ---
 
