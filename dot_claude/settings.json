@@ -42,5 +42,6 @@
   },
   "language": "japanese",
   "effortLevel": "xhigh",
-  "tui": "default"
+  "tui": "default",
+  "theme": "dark-daltonized"
 }
