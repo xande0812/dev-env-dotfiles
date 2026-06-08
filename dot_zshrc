@@ -58,6 +58,29 @@ alias lg='lazygit'
 alias claude='claude-sandboxed'
 alias codex='codex-sandboxed'
 
+# --- functions ---
+
+# ntmux [name]: 今のシェルの env を引き継いだ、専用 socket (`-L`) の tmux server を
+# <name> という名前で起動 / そこへ attach する。AWS_* や dotenv 等の secret 入りシェルを
+# socket 単位で隔離した tmux に閉じ込める用途。
+#   - name 省略時は ntmux-<PID> (呼び出しシェルの PID) を socket 名にして新規 server を
+#     立てる。後から `tmux -L ntmux-<PID> attach` で入り直せる (PID は ps で辿れる)。
+#   - `-L $name` で毎回別 socket になるので、env (credential) がこの server だけに
+#     焼かれる (他 session に漏れない)。同名なら既存 server に attach するだけ。
+#   - `-e` で env を渡さない = secret が ps / history に乗らない。env は exec した
+#     tmux server プロセスが現シェルから継承する。
+ntmux() {
+  emulate -L zsh
+  local name=${1:-ntmux-$$}
+
+  # 既にその専用 server があれば入るだけ
+  if tmux -L "$name" has-session 2>/dev/null; then
+    exec tmux -L "$name" attach
+  fi
+  # 無ければ: 今のシェル (env 入り) から新規 server を起動
+  exec tmux -L "$name" new-session -s main
+}
+
 # zsh-syntax-highlighting は必ず最後に source する。
 [ -r /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ] && \
   source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
