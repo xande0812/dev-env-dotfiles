@@ -20,3 +20,40 @@
     refreshPeriod = "168h"
     [".config/tmux/tmux.conf".checksum]
         sha256 = "52c64ced485a90d715f30dbadb8e6c41f6f94c6418d75c00be5e569b8cbe9037"
+
+# -- samber/cc-skills-golang (Go 用 agentic skill 集) ---------------------------
+# SKILL.md 形式の skill 群 (golang-* を多数同梱)。upstream がメンテする 3rd-party
+# 成果物なので dot_* ではなくここで pin する。skill は agent の context に load される
+# 「指示文」なので prompt-injection 面でもあり、commit SHA 固定 + sha256 + bump 時の
+# upstream diff レビューを必須にする (既存 external と同じ規律)。
+#
+# Claude Code(~/.claude/skills) と Codex(~/.codex/skills) は同一 SKILL.md 形式・別
+# ディレクトリ。同じ archive を 2 か所へ展開する (DL は URL 単位で chezmoi が cache
+# するので実 fetch は 1 回)。symlink で 1 本化しないのは codex-sandboxed の bind-mount
+# が ~/.codex しか束ねず、~/.claude を指す link が sandbox 内で dangling になるため。
+#
+# 取得先 codeload.github.com (github archive の実体配信先) は egress proxy(squid) の
+# allowlist に追加が必要 (dev-env-playbook roles/squid)。raw.githubusercontent.com とは
+# 別ドメインなので tmux external の許可では届かない。
+#
+# tarball 階層: cc-skills-golang-<SHA>/skills/<name>/SKILL.md
+#   → stripComponents=2 で先頭2階層 (repo-<SHA>/ と skills/) を剥がし <name>/ を skills 直下へ。
+#   → include で skills サブツリーだけに絞り、repo 直下の CLAUDE.md / README 等は取り込まない。
+#   → exact は付けない (同ディレクトリに置く自作 skill を巻き込み削除しないため)。
+[".claude/skills"]
+    type = "archive"
+    url = "https://github.com/samber/cc-skills-golang/archive/2e24bfb3279751a4fae0194e184d99139b240619.tar.gz"
+    stripComponents = 2
+    include = ["*/skills/**"]
+    refreshPeriod = "168h"
+    [".claude/skills".checksum]
+        sha256 = "0c99af58aa1d1484c8660a29c7704c6d50536463a258c45b6dd8d996829451e0"
+
+[".codex/skills"]
+    type = "archive"
+    url = "https://github.com/samber/cc-skills-golang/archive/2e24bfb3279751a4fae0194e184d99139b240619.tar.gz"
+    stripComponents = 2
+    include = ["*/skills/**"]
+    refreshPeriod = "168h"
+    [".codex/skills".checksum]
+        sha256 = "0c99af58aa1d1484c8660a29c7704c6d50536463a258c45b6dd8d996829451e0"
