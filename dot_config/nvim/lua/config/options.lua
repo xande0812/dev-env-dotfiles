@@ -21,3 +21,4 @@ vim.g.clipboard = {
     ["*"] = osc52.paste("*"),
   },
 }
+vim.opt.clipboard = "unnamedplus"
