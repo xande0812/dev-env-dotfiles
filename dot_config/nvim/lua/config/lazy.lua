@@ -21,6 +21,7 @@ require("lazy").setup({
     -- LazyVim extras（lazyvim.plugins の後・自前 plugins の前に置く必要がある）
     { import = "lazyvim.plugins.extras.lang.typescript" },
     { import = "lazyvim.plugins.extras.lang.json" },
+    { import = "lazyvim.plugins.extras.lang.go" },
     -- import/override with your plugins
     { import = "plugins" },
   },
