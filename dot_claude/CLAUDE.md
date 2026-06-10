@@ -50,3 +50,15 @@ settings.json で以下への Read は deny されている。bwrap でも到達
 `WebFetch(domain:...)` を settings.json に追加するときは、egress proxy (squid 等、
 インフラ側で管理) の allowlist も**同じ PR で**更新する。片方だけ更新しても効かない
 (settings.json で許可しても proxy で deny、proxy allow でも settings.json で deny される)。
+
+## Obsidian vault への記録
+
+Claude / Codex は vault のうち **`~/obvault/AI/` だけ** に書ける（bwrap で AI 専用サブ
+フォルダのみ rw bind、個人ノート本体は不可視）。
+
+- vault への記録はユーザーが明示依頼したときだけ（Claude は `/obsidian-log`）。自発的に書かない。
+- 保存先・ファイル名・frontmatter は `/obsidian-log` の規約に従う。
+- `~/obvault/AI/` 以外は見えない・書けない前提（見えなくても正常）。
+- 機密値は vault に書かない。
+- 注: settings.json の defaultMode が plan のため、plan モードのままだと Write が走らない。
+  `/obsidian-log` 実行前に acceptEdits/default へ切り替える。
