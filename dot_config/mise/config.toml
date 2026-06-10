@@ -26,8 +26,9 @@ pnpm = "11.5.1"
 # 明示固定して公式 GitHub release の checksum 検証経路を担保する (短縮名 claude /
 # codex は http:claude / npm fallback も持つため)。bump 時は version を上げ、
 # upstream release を確認してから apply (flake.lock の rev+sha256 運用を踏襲)。
-"aqua:anthropics/claude-code" = "2.1.162"
+"aqua:anthropics/claude-code" = "2.1.170"
 "aqua:openai/codex" = "0.135.0"
+"aqua:vercel-labs/agent-browser" = "0.27.1"
 
 [settings]
 # cd しただけで不足 tool を自動取得・ビルドしない（install は明示）。
