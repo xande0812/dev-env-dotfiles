@@ -89,6 +89,31 @@ ntmux() {
   exec tmux -L "$name" new-session -s main
 }
 
+# --- egress: squid の明示 proxy(3128) に固定 ---
+# 透過 intercept(3130) は S3 / CloudFront 等のラウンドロビン DNS で squid の
+# host-forgery 検知に当たり、HTTP 409 で切られて TLS が intermittent に
+# WRONG_VERSION_NUMBER で落ちる (squid が「接続先実 IP」と「SNI 再解決 IP 集合」を
+# 照合し、短 TTL で IP がズレるため)。明示 proxy なら CONNECT <hostname>:443 を送るので
+# 宛先 IP 照合自体が起きず安定する。squid のあるホスト(dev-server)限定の安価なガード:
+# squid.conf が読めるときだけ export する (TCP 接続チェックはしない = 起動を遅くしない)。
+if [[ -r /etc/squid/squid.conf ]]; then
+  export HTTP_PROXY="http://127.0.0.1:3128"  http_proxy="http://127.0.0.1:3128"
+  export HTTPS_PROXY="http://127.0.0.1:3128" https_proxy="http://127.0.0.1:3128"
+  # 直結が必須なものだけ最小限。ここに入れた宛先は proxy を通らず intercept 側へ落ちる。
+  export NO_PROXY="169.254.169.254,localhost,127.0.0.1,::1"
+  export no_proxy="$NO_PROXY"
+fi
+
+# --- AWS env (credential 本体は持たせない: wrapper/SendEnv/dotenvx 等の注入に任せる) ---
+# AWS_PROFILE が空文字だと (例: laptop の SendEnv 経由で空のまま転送される)、未設定とは
+# 違って profile 解決に失敗する。env 変数 credential 運用で profile は不要なので空なら unset。
+[[ -z "${AWS_PROFILE:-}" ]] && unset AWS_PROFILE
+# 既定 region を持たせ `--region` を毎回付けずに済ませる (未設定/空のときだけ・転送値は尊重)。
+# CLI は AWS_DEFAULT_REGION、一部 SDK は AWS_REGION を見るため両方に入れる。
+: "${AWS_DEFAULT_REGION:=ap-northeast-1}"
+: "${AWS_REGION:=ap-northeast-1}"
+export AWS_DEFAULT_REGION AWS_REGION
+
 # zsh-syntax-highlighting は必ず最後に source する。
 [ -r /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ] && \
   source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
