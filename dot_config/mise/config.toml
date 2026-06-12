@@ -29,6 +29,12 @@ pnpm = "11.5.1"
 "aqua:anthropics/claude-code" = "2.1.170"
 "aqua:openai/codex" = "0.135.0"
 "aqua:vercel-labs/agent-browser" = "0.27.1"
+# rtk (Rust Token Killer): dev コマンドを token 圧縮する CLI proxy。Claude Code の
+# PreToolUse(Bash) hook (`rtk hook claude`, dot_claude/settings.json) が全 Bash を
+# `rtk ...` に書き換える = agent の挙動に効く面なので、claude/codex 同様 aqua backend
+# を明示固定して checksum 検証経路を担保する (短縮名 rtk は github fallback も持つ /
+# PATH 上は reachingforthejack/rtk と名前衝突しうるため backend を曖昧にしない)。
+"aqua:rtk-ai/rtk" = "0.42.3"
 
 [settings]
 # cd しただけで不足 tool を自動取得・ビルドしない（install は明示）。

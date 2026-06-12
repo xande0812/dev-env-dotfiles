@@ -62,3 +62,5 @@ Claude / Codex は vault のうち **`~/obvault/AI/` だけ** に書ける（bwr
 - 機密値は vault に書かない。
 - 注: settings.json の defaultMode が plan のため、plan モードのままだと Write が走らない。
   `/obsidian-log` 実行前に acceptEdits/default へ切り替える。
+
+@RTK.md
