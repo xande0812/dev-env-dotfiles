@@ -1,9 +1,13 @@
 ---
 description: 指定内容を Obsidian vault (~/obvault/AI) に Markdown ノートとして記録/更新する
 argument-hint: [記録したい内容の指示]
-allowed-tools: Write, Read, Edit, Bash(ls:*), Bash(date:*)
+allowed-tools: Write, Read, Edit, Bash(ls:*), Bash(date:*), Bash(pwd:*), Bash(echo:*)
 ---
 ユーザーの指示: $ARGUMENTS
+
+記録元の情報（frontmatter にそのまま転記する。空なら自分で `pwd` / `echo "$CLAUDE_CODE_SESSION_ID"` を実行して取得する）:
+- 記録元フルパス: !`pwd`
+- セッションID: !`echo "$CLAUDE_CODE_SESSION_ID"`
 
 上記に従い `~/obvault/AI/` 配下に Obsidian 用 Markdown ノートを作成（既存があれば更新）してください。
 
@@ -15,8 +19,11 @@ allowed-tools: Write, Read, Edit, Bash(ls:*), Bash(date:*)
     ---
     date: <YYYY-MM-DD>
     source: claude-code
+    source_path: <記録元フルパス（上記 pwd の値）>
+    session_id: <セッションID（上記 CLAUDE_CODE_SESSION_ID の値）>
     tags: [ai-note]
     ---
+  - 既存ノートを更新する場合で `source_path` / `session_id` が無ければ追記する（既存値は消さない）。
 - 本文は後で読んで分かる粒度で簡潔に。コマンド例はコードブロックで。
 - 機密値（API キー・トークン・鍵・.env の値）は書かない。
 - 完了後、作成/更新したファイルの絶対パスを報告する。
