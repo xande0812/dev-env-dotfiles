@@ -59,5 +59,6 @@
   "language": "japanese",
   "effortLevel": "xhigh",
   "tui": "default",
-  "theme": "dark-daltonized"
+  "theme": "dark-daltonized",
+  "skipWorkflowUsageWarning": true
 }

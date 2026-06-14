@@ -1,5 +1,12 @@
 # managed by chezmoi (dev-env-dotfiles). 編集は source 側 (dot_zshrc) で。
 
+# --- PATH ---
+# ~/.local/bin: pip --user / pipx 等が入れる user-local binary を PATH に出す。
+# mise activate より前に置くことで mise の pinned shim を優先しつつ system より先にする。
+# typeset -U path で再 source 時の重複を排除する (path は PATH に連動する zsh 配列)。
+typeset -U path
+path=("$HOME/.local/bin" $path)
+
 # mise: 開発ツール (node/ripgrep/eza/starship/sheldon/git-wt/ghq 等) を PATH に出す。
 # 他の eval より先に置く必要がある。
 eval "$(mise activate zsh)"
