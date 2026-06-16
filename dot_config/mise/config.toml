@@ -35,6 +35,11 @@ pnpm = "11.5.1"
 # を明示固定して checksum 検証経路を担保する (短縮名 rtk は github fallback も持つ /
 # PATH 上は reachingforthejack/rtk と名前衝突しうるため backend を曖昧にしない)。
 "aqua:rtk-ai/rtk" = "0.42.3"
+# rmux: Rust 製の tmux 互換 multiplexer (90+ tmux command 対応)。mise registry に
+# short name 未登録なので github backend を明示 (Releases の prebuilt binary
+# rmux-x.y.z-linux-x86_64.tar.gz を取得。ubi backend は deprecated)。cargo/rust
+# toolchain 不要。bump 時は version を上げ upstream release を確認してから apply。
+"github:helvesec/rmux" = "0.5.0"
 
 [settings]
 # cd しただけで不足 tool を自動取得・ビルドしない（install は明示）。
