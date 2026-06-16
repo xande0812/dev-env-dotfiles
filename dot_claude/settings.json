@@ -38,8 +38,7 @@
       "Bash(git fetch *)",
       "Bash(git pull)",
       "Bash(git pull *)",
-      "Bash(git clone *)",
-      "WebFetch"
+      "Bash(git clone *)"
     ],
     "defaultMode": "plan"
   },
