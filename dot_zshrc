@@ -95,7 +95,8 @@ alias cx-env='codex-with-dotenv'
 # <name> という名前で起動 / そこへ attach する。AWS_* や dotenv 等の secret 入りシェルを
 # socket 単位で隔離した tmux に閉じ込める用途。
 #   - name 省略時は ntmux-<PID> (呼び出しシェルの PID) を socket 名にして新規 server を
-#     立てる。後から `tmux -L ntmux-<PID> attach` で入り直せる (PID は ps で辿れる)。
+#     立てる。detach 後は `ntmux-attach` (socket が唯一なら自動再接続 / 複数なら一覧表示)
+#     か `ntmux-ls` で socket を確認して入り直せる (PID を ps で辿る必要はない)。
 #   - `-L $name` で毎回別 socket になるので、env (credential) がこの server だけに
 #     焼かれる (他 session に漏れない)。同名なら既存 server に attach するだけ。
 #   - `-e` で env を渡さない = secret が ps / history に乗らない。env は exec した
@@ -110,6 +111,46 @@ ntmux() {
   fi
   # 無ければ: 今のシェル (env 入り) から新規 server を起動
   exec tmux -L "$name" new-session -s main
+}
+
+# ntmux-ls: 自分の ntmux-* 専用 socket と、その中の session を一覧する。
+# 素の tmux は default socket (= `tmux ls` に出る側) なので、そこには現れない
+# ntmux 側の生存中 server を確認する用。
+ntmux-ls() {
+  emulate -L zsh
+  local sockdir=${TMUX_TMPDIR:-/tmp}/tmux-$(id -u)
+  local socks=("$sockdir"/ntmux-*(N))
+  if (( ${#socks} == 0 )); then
+    print -r -- "ntmux socket なし ($sockdir)"
+    return 1
+  fi
+  local s
+  for s in $socks; do
+    print -r -- "=== ${s:t} ==="
+    tmux -L "${s:t}" ls 2>/dev/null
+  done
+}
+
+# ntmux-attach [socket]: ntmux 専用 server へ再接続する (PID を ps で辿らずに復帰する用)。
+#   - socket 指定時はそこへ attach。
+#   - 省略時: ntmux-* socket が 1 個ならそこへ自動接続、複数なら一覧して指定を促す。
+# detach しても server 自体は生き続けるので、何度でもこれで入り直せる。
+# ntmux 本体と違い exec しない = detach すると呼び出し元シェルへ戻る (再接続だけなので
+# 元シェルの env は server に影響しない)。
+ntmux-attach() {
+  emulate -L zsh
+  local sockdir=${TMUX_TMPDIR:-/tmp}/tmux-$(id -u)
+  if [[ -n "$1" ]]; then
+    tmux -L "$1" attach
+    return
+  fi
+  local socks=("$sockdir"/ntmux-*(N))
+  case ${#socks} in
+    0) print -r -- "ntmux socket なし ($sockdir)"; return 1 ;;
+    1) tmux -L "${socks[1]:t}" attach ;;
+    *) print -r -- "ntmux socket が複数あります。ntmux-attach <socket> で指定してください:"
+       print -rl -- ${socks:t}; return 1 ;;
+  esac
 }
 
 # --- egress: squid の明示 proxy(3128) に固定 ---
