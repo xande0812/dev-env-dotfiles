@@ -55,9 +55,20 @@
       }
     ]
   },
+  "extraKnownMarketplaces": {
+    "agent-toolkit-for-aws": {
+      "source": {
+        "source": "github",
+        "repo": "aws/agent-toolkit-for-aws"
+      }
+    }
+  },
   "language": "japanese",
   "effortLevel": "xhigh",
   "tui": "default",
+  "skipWorkflowUsageWarning": true,
   "theme": "dark-daltonized",
-  "skipWorkflowUsageWarning": true
+  "enabledPlugins": {
+    "aws-core@agent-toolkit-for-aws": true
+  }
 }
