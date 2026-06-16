@@ -15,7 +15,12 @@ eval "$(mise activate zsh)"
 HISTFILE="$HOME/.zsh_history"
 HISTSIZE=100000
 SAVEHIST=100000
-setopt SHARE_HISTORY HIST_IGNORE_DUPS HIST_IGNORE_ALL_DUPS HIST_EXPIRE_DUPS_FIRST
+# fish ライクに「ターミナルごとに独立した履歴」にする。
+# - SHARE_HISTORY は使わない: 他の開いているセッションのコマンドを即時取り込まないので、
+#   各端末/tmux ペインの ↑履歴がそのセッション固有になる。
+# - INC_APPEND_HISTORY: 実行ごとに即 HISTFILE へ追記する。clobber(複数端末の上書き)を防ぎ、
+#   かつ新しく開いた端末は過去の全コマンドを読める(= 共有ファイルに蓄積はされる)。
+setopt INC_APPEND_HISTORY HIST_IGNORE_DUPS HIST_IGNORE_ALL_DUPS HIST_EXPIRE_DUPS_FIRST
 
 # --- completion + plugins ---
 # sheldon: zsh-completions(fpath) → compinit → fzf-tab の順で source する。
@@ -41,6 +46,17 @@ bindkey '^g' ghq-fzf-widget
 # zsh-autosuggestions: widget を wrap するので fzf-tab の後・syntax-highlighting の前。
 [ -r /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh ] && \
   source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+
+# --- history search (fish ライクな前方一致の ↑/↓) ---
+# 入力中の文字列を prefix として一致する履歴だけを ↑/↓ でたどる。
+# (空入力なら通常の履歴移動。複数行 buffer 内では行移動を優先する組込み widget。)
+autoload -U up-line-or-beginning-search down-line-or-beginning-search
+zle -N up-line-or-beginning-search
+zle -N down-line-or-beginning-search
+bindkey '^[[A' up-line-or-beginning-search    # Up
+bindkey '^[[B' down-line-or-beginning-search  # Down
+bindkey '^[OA' up-line-or-beginning-search    # Up   (application/keypad mode)
+bindkey '^[OB' down-line-or-beginning-search  # Down (application/keypad mode)
 
 # --- prompt ---
 eval "$(starship init zsh)"
