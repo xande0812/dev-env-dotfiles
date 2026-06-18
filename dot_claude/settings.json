@@ -55,6 +55,10 @@
       }
     ]
   },
+  "enabledPlugins": {
+    "aws-core@agent-toolkit-for-aws": true,
+    "deploy-on-aws@claude-plugins-official": true
+  },
   "extraKnownMarketplaces": {
     "agent-toolkit-for-aws": {
       "source": {
@@ -67,8 +71,5 @@
   "effortLevel": "xhigh",
   "tui": "default",
   "skipWorkflowUsageWarning": true,
-  "theme": "dark-daltonized",
-  "enabledPlugins": {
-    "aws-core@agent-toolkit-for-aws": true
-  }
+  "theme": "dark-daltonized"
 }
