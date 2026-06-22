@@ -71,5 +71,23 @@
   "effortLevel": "xhigh",
   "tui": "default",
   "skipWorkflowUsageWarning": true,
-  "theme": "dark-daltonized"
+  "theme": "dark-daltonized",
+  "statusLine": {
+    "type": "command",
+    "command": "bash /home/human/.claude/statusline-command.sh"
+  },
+  "footerLinksRegexes": [
+    {
+      "type": "regex",
+      "pattern": "https://github\\.com/(?<owner>[\\w.-]+)/(?<repo>[\\w.-]+)/(?<kind>pull|issues)/(?<number>\\d+)",
+      "url": "https://github.com/{owner}/{repo}/{kind}/{number}",
+      "label": "{owner}/{repo}#{number}"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?<owner>[\\w][\\w.-]*)/(?<repo>[\\w][\\w.-]*)#(?<number>\\d+)",
+      "url": "https://github.com/{owner}/{repo}/issues/{number}",
+      "label": "{owner}/{repo}#{number}"
+    }
+  ]
 }
