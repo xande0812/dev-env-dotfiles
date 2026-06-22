@@ -43,9 +43,32 @@ if [ -n "$cwd" ] && [ -n "$HOME" ]; then
 fi
 
 # --- git ブランチ ---
+# 注: commit.gpgsign=true + gpg.format=ssh(1Password SSH agent)環境では git プロセスの
+#     起動が 1Password 認証を誘発しうる。statusLine は数百ms毎に走るため、git コマンドを
+#     一切使わず .git/HEAD を直接読んでブランチ名を得る(認証を発生させない)。
 branch=""
-if [ -n "$cwd" ] && git -C "$cwd" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
-  branch=$(git -C "$cwd" --no-optional-locks symbolic-ref --short HEAD 2>/dev/null)
+if [ -n "$cwd" ]; then
+  d="$cwd"
+  while [ -n "$d" ] && [ "$d" != "/" ]; do
+    gitloc="$d/.git"
+    headfile=""
+    if [ -d "$gitloc" ]; then
+      headfile="$gitloc/HEAD"
+    elif [ -f "$gitloc" ]; then
+      # worktree/submodule: ".git" は "gitdir: <path>" を指すファイル
+      gd=$(sed -n 's/^gitdir: //p' "$gitloc" 2>/dev/null)
+      case "$gd" in
+        /*) headfile="$gd/HEAD" ;;
+        ?*) headfile="$d/$gd/HEAD" ;;
+      esac
+    fi
+    if [ -n "$headfile" ]; then
+      # "ref: refs/heads/<branch>" ならブランチ名、detached HEAD(生SHA)なら空
+      [ -f "$headfile" ] && branch=$(sed -n 's@^ref: refs/heads/@@p' "$headfile" 2>/dev/null)
+      break
+    fi
+    d="${d%/*}"
+  done
 fi
 
 # --- セッション経過時間 (transcript で timestamp を持つ最初の行から算出) ---
