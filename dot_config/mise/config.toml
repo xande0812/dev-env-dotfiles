@@ -17,6 +17,7 @@ direnv = "2.37.1"
 gh = "2.93.0"
 ghq = "1.10.1"
 dotenvx = "1.71.0"
+ollama = "0.30.10"
 "github:k1LoW/git-wt" = "0.29.0"
 "aqua:rossmacarthur/sheldon" = "0.8.5"
 # pnpm: bwrap の pnpm-sandboxed (install 系 sandbox) が使う。
