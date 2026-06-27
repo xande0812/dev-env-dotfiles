@@ -161,11 +161,11 @@ ntmux-attach() {
 # 宛先 IP 照合自体が起きず安定する。squid のあるホスト(dev-server)限定の安価なガード:
 # squid.conf が読めるときだけ export する (TCP 接続チェックはしない = 起動を遅くしない)。
 if [[ -r /etc/squid/squid.conf ]]; then
-  export HTTP_PROXY="http://127.0.0.1:3128"  http_proxy="http://127.0.0.1:3128"
-  export HTTPS_PROXY="http://127.0.0.1:3128" https_proxy="http://127.0.0.1:3128"
-  # 直結が必須なものだけ最小限。ここに入れた宛先は proxy を通らず intercept 側へ落ちる。
-  export NO_PROXY="169.254.169.254,localhost,127.0.0.1,::1"
-  export no_proxy="$NO_PROXY"
+  # export HTTP_PROXY="http://127.0.0.1:3128"  http_proxy="http://127.0.0.1:3128"
+  # export HTTPS_PROXY="http://127.0.0.1:3128" https_proxy="http://127.0.0.1:3128"
+  # # 直結が必須なものだけ最小限。ここに入れた宛先は proxy を通らず intercept 側へ落ちる。
+  # export NO_PROXY="169.254.169.254,localhost,127.0.0.1,::1"
+  # export no_proxy="$NO_PROXY"
 fi
 
 # --- AWS env (credential 本体は持たせない: wrapper/SendEnv/dotenvx 等の注入に任せる) ---
