@@ -1,7 +1,48 @@
 {
+  "effortLevel": "xhigh",
+  "enabledPlugins": {
+    "aws-core@agent-toolkit-for-aws": true,
+    "deploy-on-aws@claude-plugins-official": true,
+    "frontend-design@claude-plugins-official": true
+  },
   "env": {
     "DISABLE_AUTOUPDATER": "1"
   },
+  "extraKnownMarketplaces": {
+    "agent-toolkit-for-aws": {
+      "source": {
+        "repo": "aws/agent-toolkit-for-aws",
+        "source": "github"
+      }
+    }
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "hooks": [
+          {
+            "command": "rtk hook claude",
+            "type": "command"
+          }
+        ],
+        "matcher": "Bash"
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "command": "bash '/home/human/.claude/hooks/herdr-agent-state.sh' session",
+            "timeout": 10,
+            "type": "command"
+          }
+        ],
+        "matcher": "*"
+      }
+    ]
+  },
+  "language": "japanese",
+  "model": "claude-fable-5[1m]",
   "permissions": {
     "allow": [
       "WebSearch",
@@ -16,6 +57,7 @@
       "Write(~/obvault/AI/**)",
       "Edit(~/obvault/AI/**)"
     ],
+    "defaultMode": "plan",
     "deny": [
       "Read(~/.aws/**)",
       "Read(~/.ssh/**)",
@@ -39,41 +81,13 @@
       "Bash(git pull)",
       "Bash(git pull *)",
       "Bash(git clone *)"
-    ],
-    "defaultMode": "plan"
-  },
-  "hooks": {
-    "PreToolUse": [
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "rtk hook claude"
-          }
-        ]
-      }
     ]
   },
-  "enabledPlugins": {
-    "aws-core@agent-toolkit-for-aws": true,
-    "deploy-on-aws@claude-plugins-official": true
-  },
-  "extraKnownMarketplaces": {
-    "agent-toolkit-for-aws": {
-      "source": {
-        "source": "github",
-        "repo": "aws/agent-toolkit-for-aws"
-      }
-    }
-  },
-  "language": "japanese",
-  "effortLevel": "xhigh",
-  "tui": "default",
   "skipWorkflowUsageWarning": true,
-  "theme": "dark-daltonized",
   "statusLine": {
-    "type": "command",
-    "command": "bash /home/human/.claude/statusline-command.sh"
-  }
+    "command": "bash /home/human/.claude/statusline-command.sh",
+    "type": "command"
+  },
+  "theme": "dark-daltonized",
+  "tui": "default"
 }
