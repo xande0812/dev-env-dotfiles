@@ -5,6 +5,7 @@
   "permissions": {
     "allow": [
       "WebSearch",
+      "WebFetch(*)",
       "WebFetch(domain:docs.anthropic.com)",
       "WebFetch(domain:docs.aws.amazon.com)",
       "WebFetch(domain:developer.mozilla.org)",
@@ -23,10 +24,6 @@
       "Read(**/.env*)",
       "Read(/proc/*/environ)",
       "Read(~/.claude/.credentials.json)",
-      "Bash(curl *)",
-      "Bash(wget *)",
-      "Bash(http *)",
-      "Bash(https *)",
       "Bash(rm -rf /*)",
       "Bash(rm -rf ~*)",
       "Bash(rm -rf $HOME*)",
